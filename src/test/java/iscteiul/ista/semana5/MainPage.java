@@ -1,25 +1,24 @@
 package iscteiul.ista.semana5;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import com.codeborne.selenide.SelenideElement;
 
-// page_url = https://www.jetbrains.com/
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
+
 public class MainPage {
-    @FindBy(xpath = "//*[@data-test-marker='Developer Tools']")
-    public WebElement seeDeveloperToolsButton;
 
-    @FindBy(xpath = "//*[@data-test='suggestion-action']")
-    public WebElement findYourToolsButton;
+    public SelenideElement seeDeveloperToolsButton =
+            $x("//*[@data-test-marker='Developer Tools']");
 
-    @FindBy(xpath = "//div[@data-test='main-menu-item' and @data-test-marker = 'Developer Tools']")
-    public WebElement toolsMenu;
+    public SelenideElement findYourToolsButton =
+            $x("//*[@data-test='suggestion-link']");
 
-    @FindBy(css = "[data-test='site-header-search-action']")
-    public WebElement searchButton;
+    public SelenideElement toolsMenu =
+            $("[aria-label='Developer Tools: Open submenu']");
 
-    public MainPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
-    }
+    public SelenideElement searchButton =
+            $("[data-test='site-header-search-action']");
+
+    public SelenideElement searchInput =
+            $("[data-test-id='search-input']");
 }

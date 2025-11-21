@@ -1,63 +1,85 @@
 package iscteiul.ista.semana5;
 
+import com.codeborne.selenide.*;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MainPageTest {
-    private WebDriver driver;
-    private MainPage mainPage;
+
+    MainPage mainPage = new MainPage();
+
+    @BeforeAll
+    public static void setUpAll() {
+        Configuration.browserSize = "1280x800";
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
 
     @BeforeEach
     public void setUp() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://www.jetbrains.com/");
-        mainPage = new MainPage(driver);
+        open("https://www.jetbrains.com/");
+        closeAllCookieBanners();
     }
 
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
+    // ---- Função universal para fechar qualquer cookie banner ----
+    private void closeAllCookieBanners() {
+
+        String[] cookieSelectors = {
+                "button.ch2-allow-all-btn",
+                "button[data-test='footer__button-accept']",
+                "button[id*='accept']",
+                "button[class*='accept']",
+                ".ch2-container button"
+        };
+
+        for (String sel : cookieSelectors) {
+            if ($(sel).exists() && $(sel).isDisplayed()) {
+                $(sel).click();
+                sleep(400);
+                break;
+            }
+        }
     }
+
+    // -------------------- TESTES --------------------
 
     @Test
     public void search() {
-        mainPage.searchButton.click();
+        // Abre caixa de pesquisa
+        mainPage.searchButton.shouldBe(visible).click();
 
-        WebElement searchField = driver.findElement(By.cssSelector("[data-test='search-input']"));
-        searchField.sendKeys("Selenium");
+        // Preenche pesquisa
+        mainPage.searchInput.shouldBe(visible).setValue("Selenium");
+        mainPage.searchInput.shouldHave(value("Selenium"));
 
-        WebElement submitButton = driver.findElement(By.cssSelector("button[data-test='full-search-button']"));
-        submitButton.click();
-
-        WebElement searchPageField = driver.findElement(By.cssSelector("input[data-test='search-input']"));
-        assertEquals("Selenium", searchPageField.getAttribute("value"));
+        // Clica no botão de pesquisa
+        $("button[data-test='full-search-button']")
+                .scrollTo()
+                .shouldBe(visible, enabled)
+                .click();
     }
 
     @Test
     public void toolsMenu() {
-        mainPage.toolsMenu.click();
-
-        WebElement menuPopup = driver.findElement(By.cssSelector("div[data-test='main-submenu']"));
-        assertTrue(menuPopup.isDisplayed());
+        mainPage.toolsMenu.shouldBe(visible).click();
+        $("[data-test-marker='Developer Tools']").shouldBe(visible);
     }
 
     @Test
     public void navigationToAllTools() {
-        mainPage.seeDeveloperToolsButton.click();
-        mainPage.findYourToolsButton.click();
 
-        WebElement productsList = driver.findElement(By.id("products-page"));
-        assertTrue(productsList.isDisplayed());
-        assertEquals("All Developer Tools and Products by JetBrains", driver.getTitle());
+        mainPage.seeDeveloperToolsButton.shouldBe(visible).click();
+        mainPage.findYourToolsButton.shouldBe(visible).click();
+
+        $("#products-page").shouldBe(visible);
+
+        assertEquals(
+                "All Developer Tools and Products by JetBrains",
+                title()
+        );
     }
 }
