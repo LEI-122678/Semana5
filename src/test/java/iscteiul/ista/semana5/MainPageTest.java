@@ -1,54 +1,49 @@
 package iscteiul.ista.semana5;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.*;
 
 public class MainPageTest {
-    private WebDriver driver;
-    private MainPage mainPage;
+    MainPage mainPage = new MainPage();
+
+    @BeforeAll
+    public static void setUpAll() {
+        Configuration.browserSize = "1280x800";
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
 
     @BeforeEach
     public void setUp() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://www.jetbrains.com/");
-        mainPage = new MainPage(driver);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
+        open("https://www.jetbrains.com/");
+        if($("button.ch2-allow-all-btn").isDisplayed())
+            $("button.ch2-allow-all-btn").click();
     }
 
     @Test
     public void search() {
+
         mainPage.searchButton.click();
 
-        WebElement searchField = driver.findElement(By.cssSelector("[data-test='search-input']"));
-        searchField.sendKeys("Selenium");
-
-        WebElement submitButton = driver.findElement(By.cssSelector("button[data-test='full-search-button']"));
-        submitButton.click();
-
-        WebElement searchPageField = driver.findElement(By.cssSelector("input[data-test='search-input']"));
-        assertEquals("Selenium", searchPageField.getAttribute("value"));
+        mainPage.searchInput.setValue("Selenium");
+        mainPage.searchInput.shouldBe(Condition.visible).shouldHave(attribute("value", "Selenium"));
+        $("button[data-test='full-search-button']").click();
     }
 
     @Test
     public void toolsMenu() {
         mainPage.toolsMenu.click();
-
-        WebElement menuPopup = driver.findElement(By.cssSelector("div[data-test='main-submenu']"));
-        assertTrue(menuPopup.isDisplayed());
+        $("[data-test-marker=\"Developer Tools\"]").shouldBe(Condition.visible);
     }
 
     @Test
@@ -56,8 +51,8 @@ public class MainPageTest {
         mainPage.seeDeveloperToolsButton.click();
         mainPage.findYourToolsButton.click();
 
-        WebElement productsList = driver.findElement(By.id("products-page"));
-        assertTrue(productsList.isDisplayed());
-        assertEquals("All Developer Tools and Products by JetBrains", driver.getTitle());
+        $("#products-page").shouldBe(visible);
+
+        assertEquals("All Developer Tools and Products by JetBrains", Selenide.title());
     }
 }
