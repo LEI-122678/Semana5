@@ -28,7 +28,8 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.9.19</version> <!-- Verifique se uma versão mais recente suporta JDK 25 -->
+            <version>${aspectj.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.codeborne</groupId>
