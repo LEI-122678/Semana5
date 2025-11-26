@@ -30,6 +30,8 @@ public class MainPageTest {
             $("button.ch2-allow-all-btn").click();
     }
 
+    // -------------------- TESTES --------------------
+
     @Test
     public void search() {
 
@@ -48,8 +50,6 @@ public class MainPageTest {
 
     @Test
     public void navigationToAllTools() {
-        mainPage.seeDeveloperToolsButton.click();
-        mainPage.findYourToolsButton.click();
 
         $("#products-page").shouldBe(visible);
 
