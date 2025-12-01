@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","1504","Deve mostrar informação básica de um item de filme (simulado no DOM)","","2025-11-26","passed","2025-11-26","","Database 3 – Informação sobre filme","Database.MovieInfoTest","shouldLoadMovieInfoSection"
+"","2556","toString da página (Page Object) não deve ser vazio","","2025-11-26","passed","2025-11-26","","Database 3 – Informação sobre filme","Database.MovieInfoTest","pageObjectToStringShouldWork"
+"","2375","testFirstMovie()","","2025-12-01","passed","2025-12-01","","Database.MovieDatabaseTest","Database.MovieDatabaseTest","testFirstMovie"
