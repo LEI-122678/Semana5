@@ -10,3 +10,5 @@
 - Beatriz Nunes — 122717
 
 Devido a problemas com a criação de repositórios no github, o aluno de menor número não conseguiu criar o repositório, tendo este sido criado pelo segundo maior número.
+
+Vídeo Testes Suit: https://youtu.be/CKFVNG0lGmc
